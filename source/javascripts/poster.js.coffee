@@ -5,7 +5,6 @@ class Poster
       @radius_min, @radius_max
     } = options
 
-    # @nodes = @nodes_from_noise()
     @nodes = []
 
     pack = (a, b, c) ->
@@ -68,49 +67,6 @@ class Poster
             candidate_node.i = node_id++
             queue.push(candidate_node)
             @nodes.push(candidate_node)
-
-
-    # i = 2
-    # collision = false
-    # while !collision
-      # nx = { r: 5, color: "blue" }
-      # while true
-        # pack(n0, @nodes[i-1], nx)
-        # if (@r_for_point(nx.x, nx.y) > nx.r)
-          # console.log("r for point: #{@r_for_point(nx.x, nx.y)}")
-          # nx.r += 1
-        # else
-          # break
-      # # console.log("collision #{i}") if @collides(nx, @nodes)
-      # collision = @collides(nx, @nodes)
-      # unless collision
-        # @nodes.push nx
-        # i++
-
-    # for n0, idx in @nodes[1..]
-      # i = idx + 1
-      # collision = false
-      # while !collision
-        # nx = { r: 5, color: "red" }
-        # # Walk towards optimal size/fit
-        # while true
-          # pack(n0, @nodes[i-1], nx)
-          # if (@r_for_point(nx.x, nx.y) > nx.r)
-            # nx.r += 1
-          # else
-            # break
-        # # console.log("collision #{i}") if @collides(nx, @nodes)
-        # collision = @collides(nx, @nodes)
-        # unless collision
-          # @nodes.push nx
-          # i++
-
-    # console.log n.r for n in @nodes
-
-    # @nodes.push { r: radius } for radius in [5..30] by 5
-    # pack(n0, n1, node) for node in @nodes[2..]
-
-    # console.log node.r for node in @nodes
 
     @svg = d3.select(document.body).append("svg:svg")
       .attr("width", @w())
@@ -187,17 +143,6 @@ class Poster
 
   draw: () ->
     @force.start()
-    # @force.tick() for [1..150]
-    # @force.stop()
-    # @circles
-        # .sort( (a, b) => 
-          # mx = @w() / 2
-          # my = @h() / 2
-          # 10*(b.r - a.r) + (@dist(a.x, a.y, mx, my) - @dist(b.x, b.y, mx, my)) )
-        # .transition()
-        # .delay( (d, i) -> i * 2)
-        # .duration(400)
-        # .attr("stroke-opacity", 1)
 
   collide: (node) ->
       r = node.r
