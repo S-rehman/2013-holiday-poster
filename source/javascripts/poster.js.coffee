@@ -5,73 +5,32 @@ class Poster
       @radius_min, @radius_max
     } = options
 
+    @svg = d3.select(document.body).append("svg:svg")
+      .attr("width", @w())
+      .attr("height", @h())
+
     @nodes = []
 
-    pack = (a, b, c) ->
-      db = a.r + c.r
-      dx = b.x - a.x
-      dy = b.y - a.y
-
-      if (db && (dx || dy))
-        da = b.r + c.r
-        dc = dx * dx + dy * dy
-
-        da *= da
-        db *= db
-
-        x = 0.5 + (db - da) / (2 * dc)
-        y = Math.sqrt(Math.max(0, 2 * da * (db + dc) - (db -= dc) * db - da * da)) / (2 * dc)
-
-        c.x = a.x + x * dx + y * dy
-        c.y = a.y + x * dy - y * dx
-      else
-        c.x = a.x + db
-        c.y = a.y
-
     q = d3.geom.quadtree(@nodes)
-    queue = []
+    @queue = []
 
     # start with a random point
     x = Math.random() * @w()
     y = Math.random() * @h()
     n0 = { x: x, y: y, r: @r_for_point(x, y), i: 0 } 
     @nodes.push n0
-    queue.push n0
+    @queue.push n0
 
     n1 = { r: @r_for_point(n0.x + n0.r, n0.y), i: 1 }
     n1.x = n0.x + n0.r + n1.r
     n1.y = y
     @nodes.push n1 
-    queue.push n1
+    @queue.push n1
 
-    node_id = 2
-    while (node = queue.shift())
-      temp_nodes = []
-      for i in [0...8]
-        new_node = { r: @radius_min }
-        if i is 0
-          placement_node = if node.i is 0 then @nodes[1] else @nodes[node.i - 1]
-        else
-          placement_node = temp_nodes[i - 1]
+    @node_id = 2
+    @place_next_nodes()
 
-        # Walk towards optimal size/fit
-        while true
-          pack(node, placement_node, new_node)
-          if (@r_for_point(new_node.x, new_node.y) > new_node.r)
-            new_node.r += 1
-          else
-            break
-        temp_nodes.push(new_node)
-        for candidate_node in temp_nodes
-          unless @should_cull(candidate_node)
-            candidate_node.i = node_id++
-            queue.push(candidate_node)
-            @nodes.push(candidate_node)
-
-    @svg = d3.select(document.body).append("svg:svg")
-      .attr("width", @w())
-      .attr("height", @h())
-
+  init_graph: () =>
     @force = d3.layout.force()
       .nodes(@nodes)
       .links([])
@@ -94,6 +53,61 @@ class Poster
       @svg.selectAll("circle")
           .attr("cx", (d) -> d.x)
           .attr("cy", (d) -> d.y)
+    @draw()
+
+  place_next_nodes: () =>
+    if (node = @queue.shift())
+      temp_nodes = []
+      for i in [0...8]
+        new_node = { r: @radius_min }
+        if i is 0
+          placement_node = if node.i is 0 then @nodes[1] else @nodes[node.i - 1]
+        else
+          placement_node = temp_nodes[i - 1]
+
+        # Walk towards optimal size/fit
+        while true
+          @pack(node, placement_node, new_node)
+          if (@r_for_point(new_node.x, new_node.y) > new_node.r)
+            new_node.r += 1
+          else
+            break
+        temp_nodes.push(new_node)
+        for candidate_node in temp_nodes
+          unless @should_cull(candidate_node)
+            candidate_node.i = @node_id++
+            @queue.push(candidate_node)
+            @nodes.push(candidate_node)
+            @circles = @svg.selectAll("circle")
+                .data(@nodes)
+              .enter().append("svg:circle")
+                .attr("r", (d) -> d.r)
+                .attr("cx", (d) -> d.x)
+                .attr("cy", (d) -> d.y)
+      _.defer(@place_next_nodes)
+    else
+      @init_graph()
+
+  pack: (a, b, c) ->
+    db = a.r + c.r
+    dx = b.x - a.x
+    dy = b.y - a.y
+
+    if (db && (dx || dy))
+      da = b.r + c.r
+      dc = dx * dx + dy * dy
+
+      da *= da
+      db *= db
+
+      x = 0.5 + (db - da) / (2 * dc)
+      y = Math.sqrt(Math.max(0, 2 * da * (db + dc) - (db -= dc) * db - da * da)) / (2 * dc)
+
+      c.x = a.x + x * dx + y * dy
+      c.y = a.y + x * dy - y * dx
+    else
+      c.x = a.x + db
+      c.y = a.y
 
   collides: (node, nodes) ->
     for point in nodes
@@ -215,4 +229,4 @@ window.poster = new Poster {
   radius_min: 5
   radius_max: 30
 }
-window.poster.draw()
+# window.poster.draw()
