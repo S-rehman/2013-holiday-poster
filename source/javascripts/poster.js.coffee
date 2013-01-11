@@ -11,7 +11,6 @@ class Poster
 
     @nodes = []
 
-    q = d3.geom.quadtree(@nodes)
     @queue = []
 
     # start with a random point
@@ -21,13 +20,20 @@ class Poster
     @nodes.push n0
     @queue.push n0
 
-    n1 = { r: @r_for_point(n0.x + n0.r, n0.y), i: 1 }
-    n1.x = n0.x + n0.r + n1.r
-    n1.y = y
+    x = x + n0.r * Math.cos(45)
+    y = y + n0.r * Math.sin(45)
+    r = @r_for_point(x + n0.r, y)
+    n1 = {
+      r: r
+      x: x + r * Math.cos(45)
+      y: y + r * Math.sin(45)
+      i: 1
+    }
     @nodes.push n1 
     @queue.push n1
 
     @node_id = 2
+    @q = d3.geom.quadtree(@nodes, -100, -100, @w() + 100, @h() + 100)
     @place_next_nodes()
 
   init_graph: () =>
@@ -73,17 +79,18 @@ class Poster
           else
             break
         temp_nodes.push(new_node)
-        for candidate_node in temp_nodes
-          unless @should_cull(candidate_node)
-            candidate_node.i = @node_id++
-            @queue.push(candidate_node)
-            @nodes.push(candidate_node)
-            @circles = @svg.selectAll("circle")
-                .data(@nodes)
-              .enter().append("svg:circle")
-                .attr("r", (d) -> d.r)
-                .attr("cx", (d) -> d.x)
-                .attr("cy", (d) -> d.y)
+      for candidate_node in temp_nodes
+        unless @should_cull(candidate_node)
+          candidate_node.i = @node_id++
+          @queue.push(candidate_node)
+          @nodes.push(candidate_node)
+          @q.add(candidate_node)
+          @circles = @svg.selectAll("circle")
+              .data(@nodes)
+            .enter().append("svg:circle")
+              .attr("r", (d) -> d.r)
+              .attr("cx", (d) -> d.x)
+              .attr("cy", (d) -> d.y)
       _.defer(@place_next_nodes)
     else
       @init_graph()
@@ -109,14 +116,24 @@ class Poster
       c.x = a.x + db
       c.y = a.y
 
-  collides: (node, nodes) ->
-    for point in nodes
-      x = node.x - point.x
-      y = node.y - point.y
-      l = Math.sqrt(x*x + y*y)
-      r = node.r + point.r
-      if (r - l) > 0.001
-        return true
+  collides: (node) ->
+    r = node.r + 16
+    nx1 = node.x - r
+    nx2 = node.x + r
+    ny1 = node.y - r
+    ny2 = node.y + r
+    collides = false
+    @q.visit (quad, x1, y1, x2, y2) ->
+      if (quad.point && (quad.point != node))
+        x = node.x - quad.point.x
+        y = node.y - quad.point.y
+        l = Math.sqrt(x * x + y * y)
+        r = node.r + quad.point.r
+        if (r - l) > 0.001
+          collides = true
+        
+      (x1 > nx2) || (x2 < nx1) || (y1 > ny2) || (y2 < ny1)
+    collides
 
   should_cull: (node) ->
     {x, y, r} = node
@@ -124,7 +141,7 @@ class Poster
     y + r < -100 ||
     x - r > @w() + 100 ||
     y - r > @h() + 100 ||
-    @collides(node, @nodes)
+    @collides(node)
 
   r_for_point: (x, y) ->
     @noise.for_point(x, y) * (@radius_max - @radius_min) + @radius_min
