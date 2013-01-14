@@ -3,6 +3,7 @@ class Poster
     {
       @noise, @gravity, @step_size, @friction,
       @radius_min, @radius_max
+      @padding
     } = options
 
     @svg = d3.select(document.body).append("svg:svg")
@@ -33,7 +34,7 @@ class Poster
     @queue.push n1
 
     @node_id = 2
-    @q = d3.geom.quadtree(@nodes, -100, -100, @w() + 100, @h() + 100)
+    @q = d3.geom.quadtree(@nodes, -@padding, -@padding, @w() + @padding, @h() + @padding)
     @place_next_nodes()
 
   init_graph: () =>
@@ -137,10 +138,10 @@ class Poster
 
   should_cull: (node) ->
     {x, y, r} = node
-    x + r < -100 ||
-    y + r < -100 ||
-    x - r > @w() + 100 ||
-    y - r > @h() + 100 ||
+    x + r < -@padding ||
+    y + r < -@padding ||
+    x - r > @w() + @padding ||
+    y - r > @h() + @padding ||
     @collides(node)
 
   r_for_point: (x, y) ->
@@ -245,5 +246,6 @@ window.poster = new Poster {
   step_size: 20
   radius_min: 5
   radius_max: 30
+  padding: 200
 }
 # window.poster.draw()
