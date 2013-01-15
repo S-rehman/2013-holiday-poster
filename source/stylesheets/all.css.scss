@@ -1,3 +1,5 @@
+@import "compass";
+
 body {
   background: #a09487;
 }
@@ -9,9 +11,11 @@ canvas {
 }
 
 circle {
-  fill: #a09487;
+  /* fill: #a09487; */
+  fill: none;
   stroke: #b9afa5;
   stroke-opacity: 1;
   stroke-width: 2.5;
+  @include translateZ(0);
 }
 
