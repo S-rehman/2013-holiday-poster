@@ -4,6 +4,8 @@ class Poster
       @json_url
     } = options
 
+    @init_text()
+
     @svg = d3.select(document.body).append("svg:svg")
       .attr("width", @w())
       .attr("height", @h())
@@ -45,6 +47,12 @@ class Poster
           # .remove()
 
       _.delay(@glimmer, 6000)
+
+  init_text: () ->
+    @heading = document.querySelector("h1")
+    h = (@h() - @heading.clientHeight) / 2
+    @heading.style.top = "#{h}px"
+
 
   glimmer: () =>
     @circles.transition()
