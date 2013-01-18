@@ -52,6 +52,7 @@ class Poster
     @heading = document.querySelector("h1")
     h = (@h() - @heading.clientHeight) / 2
     @heading.style.top = "#{h}px"
+    @heading.style.visibility = "visible"
 
 
   glimmer: () =>
