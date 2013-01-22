@@ -4,15 +4,19 @@ class Poster
       @json_url
     } = options
 
-    @init_text()
+    @w = @width()
+    @h = @height()
 
+    @init_text()
+    
     @svg = d3.select(document.body).append("svg:svg")
-      .attr("width", @w())
-      .attr("height", @h())
+      .attr("width", @w)
+      .attr("height", @h)
+      .append("g")
 
     d3.json @json_url, (e, data) =>
       @nodes = _.filter(data, (d) =>
-          +d.cx < @w() && +d.cy < @h() )
+          +d.cx < @w && +d.cy < @h )
         .map( (d) ->
           d.r = Math.round(d.r)
           d.cx = Math.round(d.cx)
@@ -26,56 +30,53 @@ class Poster
           .attr("cy", (d) -> d.cy)
           .style("opacity", 0)
       @circles.transition()
-        # .delay( (d, i) -> (+d.cx + +d.cy) * (20/+d.r) + 1000 )
-        # .delay( (d, i) -> (+d.cx + +d.cy) + 1000 )
         .duration( (d, i) ->
           duration = (20 / +d.r) * 4000
-          window.durations ?= []
-          window.durations.push duration
           Math.min(duration, 6000)
         )
-        # .duration(4000)
         .style("opacity", 0.3)
-
-      # @circles.on "click", (d,i) ->
-        # d3.select(this)
-          # .transition()
-          # .duration(400)
-          # .ease(Math.sqrt)
-          # .style("opacity", 0)
-          # .attr("r", (d) -> d.r * 4 )
-          # .remove()
 
       _.delay(@glimmer, 6000)
 
   init_text: () ->
     @heading = document.querySelector("h1")
-    h = (@h() - @heading.clientHeight) / 2
+    h = (@h - @heading.clientHeight) / 2
     @heading.style.top = "#{h}px"
     @heading.style.visibility = "visible"
 
 
   glimmer: () =>
+    @glimmer_count ?= 0
+    return unless @glimmer_count++ < 10
+    cx = parseInt Math.random() * @w
+    cy = parseInt Math.random() * @h
+
+    if Math.random() > 0.5
+      if Math.random() > 0.5 then cx = 0 else cx = @w
+    else
+      if Math.random() > 0.5 then cy = 0 else cy = @h
+
     @circles.transition()
-        .duration(3000)
-        .delay( (d, i) -> d.cx + d.cy)
-        .style("opacity", (d) -> 0.3 + (d.r/30) * 0.7)
-        .attr("cx", (d) -> +d.cx + (+d.r/30) * 3)
-        # .attr("cy", (d) -> d.cy - 2)
-        # .ease("quad-in")
+        .duration(1000)
+        .delay( (d, i) =>
+
+          d1 = d.cx - cx
+          d2 = d.cy - cy
+          Math.sqrt(d1*d1 + d2*d2)
+        )
+        .style("opacity", (d) -> 0.1 + (d.r/30) * 0.7)
       .transition()
-        .duration(3000)
+        .duration(1000)
+        .style("opacity", 0.1)
+      .transition()
+        .duration(2000)
         .style("opacity", 0.3)
-        .attr("cx", (d) -> d.cx - (d.r/30) * 3)
-        # .attr("cy", (d) -> d.cy + 2)
-        # .ease("quad-out")
-        # .attr("transform", "translateX(-5,0)")
     _.delay(@glimmer, 6000 + Math.random() * 4000)
   
-  w: () ->
+  width: () ->
     window.innerWidth
 
-  h: () ->
+  height: () ->
     window.innerHeight
 
 window.poster = new Poster {
