@@ -31,23 +31,43 @@ class Poster
           .style("opacity", 0)
       @circles.transition()
         .duration( (d, i) ->
-          duration = (20 / +d.r) * 4000
-          Math.min(duration, 6000)
+          duration = (20 / +d.r) * 8000
+          Math.min(duration, 10000)
         )
-        .style("opacity", 0.3)
+        .style("opacity", 0.4)
 
-      _.delay(@glimmer, 6000)
+      _.delay(@glimmer, 10000)
 
   init_text: () ->
-    @heading = document.querySelector("h1")
-    h = (@h - @heading.clientHeight) / 2
-    @heading.style.top = "#{h}px"
-    @heading.style.visibility = "visible"
+    h = @h
+    delay_for = 4000
+    @heading = d3.select("h1")
+        .style("top", () -> "#{(h - @clientHeight) / 2}px" )
+        .style("visibility", "visible")
+
+    @heading.selectAll("span")
+      .style("opacity", 0)
+
+    _.delay( () =>
+      @heading.selectAll("span")
+        .transition()
+          .duration(1500)
+          .delay( (d, i) -> 1500 * i )
+          .style("opacity", 1)
+    , delay_for)
+
+    _.delay( ()=>
+      d3.select("footer")
+        .transition()
+        .duration(1500)
+        .style("opacity", 1)
+    , delay_for + 1500*4)
 
 
   glimmer: () =>
     @glimmer_count ?= 0
-    return unless @glimmer_count++ < 10
+    return if @glimmer_count++ > 10
+
     cx = parseInt Math.random() * @w
     cy = parseInt Math.random() * @h
 
@@ -64,13 +84,13 @@ class Poster
           d2 = d.cy - cy
           Math.sqrt(d1*d1 + d2*d2)
         )
-        .style("opacity", (d) -> 0.1 + (d.r/30) * 0.7)
+        .style("opacity", (d) -> 0.4 + (d.r/30) * 0.6)
       .transition()
         .duration(1000)
         .style("opacity", 0.1)
       .transition()
         .duration(2000)
-        .style("opacity", 0.3)
+        .style("opacity", 0.4)
     _.delay(@glimmer, 6000 + Math.random() * 4000)
   
   width: () ->

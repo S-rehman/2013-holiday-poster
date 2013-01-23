@@ -1,6 +1,8 @@
 @import "compass";
 @import "../fonts/stylesheet.css";
 
+$caecilia: 'PMNCaeciliaW01-86HeavyI';
+
 body {
   background: #a09487;
 }
@@ -25,6 +27,7 @@ h1 {
   font-family: franchise;
   font-size: 128px;
   font-size: 16vmin;
+  font-weight: normal;
   line-height: 0.85;
   margin: 0;
   position: relative;
@@ -34,11 +37,39 @@ h1 {
   z-index: 20;
 
   span {
-    display: block;
+    opacity: 0;
+    @include translateZ(0);
   }
 
   i {
     font-style: normal;
     padding: 0 0.03em;
+  }
+}
+
+footer {
+  opacity: 0;
+
+  a {
+    bottom: 40px;
+    color: rgba(#fff, 0.75);
+    font-family: $caecilia;
+    font-size: 12px;
+    position: absolute;
+    text-decoration: none;
+    z-index: 100;
+  }
+
+  .attrib {
+    left: 40px;
+  }
+
+  .us {
+    right: 40px;
+  }
+
+  img {
+    opacity: 0.75;
+    width: 40px;
   }
 }
