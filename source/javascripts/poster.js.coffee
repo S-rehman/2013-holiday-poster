@@ -9,7 +9,6 @@ class Poster
     @w = @width()
     @h = @height()
 
-    # @init_text()
     @glimmer_distance = 1
     @glimmer_target = 0
 
@@ -26,39 +25,45 @@ class Poster
         for d in data when +d.cx < @w and +d.cy < @h
           new Circle(d)
 
-      # count = @circles.length
-      # counter = 0
-      # for c in @circles
-        # do (c) ->
-          # duration = Math.min((20 / c.r) * 8000, 10000)
-          # c.opacity = 0
-          # c.tween = new TWEEN.Tween(o: 0)
-            # .to({ o: 0.4 }, duration)
-            # .easing(TWEEN.Easing.Quadratic.InOut)
-            # .onUpdate(() ->
-              # c.opacity = @o)
-            # .onComplete(() ->
-              # if (++counter == count)
-                # that.freeze_circles = true)
-            # .start()
+      count = @circles.length
+      counter = 0
+      for c in @circles
+        do (c) ->
+          duration = Math.min((20 / c.r) * 8000, 10000)
+          c.opacity = 0
+          c.tween = new TWEEN.Tween(o: 0)
+            .to({ o: 0.4 }, duration)
+            .easing(TWEEN.Easing.Quadratic.In)
+            .onUpdate(() ->
+              c.opacity = @o)
+            .start()
       @animate()
-      _.delay((() => @update_glimmer = @glimmer), 100)
+
+      _.delay((() =>
+        @init_text()
+      ), 5000)
+
+      _.delay((() => 
+        @update_glimmer = @glimmer
+      ), 10000)
 
   animate: () =>
     @raf = requestAnimationFrame @animate
-    @tick() unless @freeze_circles
-
+    @tick()
 
   stop: () ->
     cancelAnimationFrame @raf
 
   tick: () ->
-    # console.time("draw")
-    # TWEEN.update()
-    @update_glimmer() if @update_glimmer?
-    @ctx.clearRect(0, 0, @w, @h)
-    c.draw(@ctx) for c in @circles
-    # console.timeEnd("draw")
+    if @freeze_circles
+      @stop()
+    else
+      # console.time("draw")
+      TWEEN.update()
+      @update_glimmer() if @update_glimmer?
+      @ctx.clearRect(0, 0, @w, @h)
+      c.draw(@ctx) for c in @circles
+      # console.timeEnd("draw")
 
   init_text: () ->
     h = @h
@@ -67,30 +72,18 @@ class Poster
         .css("top", () -> "#{(h - @clientHeight) / 2}px" )
         .css("visibility", "visible")
 
-    spans = @heading.find("span")
+    @heading.find("span")
       .css("opacity", 0)
+      .each (i, el) ->
+        el = $(el)
+          .delay(i*2000)
+          .animate({ opacity: 1 }, 2000)
 
-    new TWEEN.Tween(o: 0)
-      .to({o: 1}, 1500)
-      .delay(delay_for)
-      .onUpdate(() -> spans.css("opacity", @o))
-      .start()
-
-    # _.delay( () =>
-      # @heading.selectAll("span")
-        # .transition()
-          # .duration(1500)
-          # .delay( (d, i) -> 1500 * i )
-          # .style("opacity", 1)
-    # , delay_for)
-
-    # _.delay( ()=>
-      # d3.select("footer")
-        # .transition()
-        # .duration(1500)
-        # .style("opacity", 1)
-    # , delay_for + 1500*4)
-
+    ($ "footer")
+      .delay(8000)
+      .animate({
+        opacity: 1
+      }, 2000)
 
   glimmer: () =>
     if @glimmer_distance > @glimmer_target
@@ -132,15 +125,7 @@ class Poster
 
   init_glimmer: () ->
     @glimmer_count ?= -1
-    @glimmer_count++
-
-    # if @glimmer_count++ > 10
-      # @freeze_circles = true
-      # return
-
-    # @freeze_circles = false
-
-    # tween_duration = 1000
+    ++@glimmer_count
 
     cx = parseInt Math.random() * @w
     cy = parseInt Math.random() * @h
@@ -152,6 +137,10 @@ class Poster
       if Math.random() > 0.5 then cx = 0 else cx = @w
     else
       if Math.random() > 0.5 then cy = 0 else cy = @h
+
+    if @glimmer_count is 0
+      cx = hx
+      cy = 0
 
     if cx > hx then destx = 0 else destx = @w
     if cy > hy then desty = 0 else desty = @h

@@ -48,7 +48,11 @@ h1 {
 }
 
 footer {
+  bottom: 0;
   opacity: 0;
+  position: absolute;
+  width: 100%;
+  z-index: 100;
 
   a {
     bottom: 40px;

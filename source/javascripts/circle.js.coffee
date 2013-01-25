@@ -20,7 +20,7 @@ class Circle
     adjusted_opacity = @opacity - @base_opacity
 
     r = (Math.random() - 0.5) * 5
-    rl = (Math.random() - 0.5) * 10
+    rl = (Math.random() - 0.5) * 7
     r *= adjusted_opacity
     rl *= adjusted_opacity
 
@@ -60,8 +60,8 @@ class Circle
     ]
 
   @setup_context: (ctx) ->
-    ctx.strokeStyle = @a2rgb @stroke_colors
-    ctx.fillStyle   = @a2rgb @fill_colors
+    ctx.strokeStyle = @a2hsl @stroke_colors
+    ctx.fillStyle   = @a2hsl @fill_colors
     ctx.lineWidth   = @line_width
 
   @randomize_tint: () ->
