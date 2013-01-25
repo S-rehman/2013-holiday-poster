@@ -103,6 +103,14 @@ class Poster
     s2 = @glimmer_step2
     s3 = @glimmer_step3
 
+    if @glimmer_count > 1
+      Circle.randomize_tint()
+
+    Circle.highlight_colors[1] = @tween_glimmer @glimmer_distance,
+                                                12,
+                                                25,
+                                                @glimmer_target - s3
+
     for c in @circles
       cd = @dist(c.cx, c.cy, @glimmer_cx, @glimmer_cy)
       delta = cd - @glimmer_distance
