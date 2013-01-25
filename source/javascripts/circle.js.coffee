@@ -1,14 +1,16 @@
 class Circle
   constructor: ({@r, @cx, @cy}) ->
     @[p] = (Math.round v) for own p, v of @
-    @opacity = 0.3
+    @opacity = 0.4
+    @base_opacity = 0.4
+    @max_opacity = Math.min(0.4 + (@r-5/25) * 0.6, 1)
 
   draw: (ctx) ->
     ctx.beginPath()
     ctx.arc(@cx, @cy, @r, 0, Math.PI*2)
     # ctx.fill()
-    # ctx.strokeStyle = @stroke_style()
-    ctx.globalAlpha = @opacity
+    ctx.strokeStyle = @stroke_style()
+    # ctx.globalAlpha = @opacity
     ctx.stroke()
 
   stroke_style: () ->
