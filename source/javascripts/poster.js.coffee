@@ -19,11 +19,20 @@ class Poster
     @ctx = @canvas.get(0).getContext("2d")
     Circle.setup_context(@ctx)
 
+    ($ window).resize(() =>
+      @w = @width()
+      @h = @height()
+      @position_heading()
+      @canvas
+        .attr("width", @w)
+        .attr("height", @h)
+      @build_circles() if @data?
+    )
+
     $.getJSON @json_url, (data) =>
       that = @
-      @circles =
-        for d in data when +d.cx < @w and +d.cy < @h
-          new Circle(d)
+      @data = data
+      @build_circles()
 
       count = @circles.length
       counter = 0
@@ -48,6 +57,12 @@ class Poster
         @update_glimmer = @glimmer
       ), 3000)
 
+  build_circles: () ->
+    Circle.setup_context(@ctx)
+    @circles =
+      for d in @data when +d.cx < @w + 30 and +d.cy < @h + 30
+        new Circle(d)
+
   animate: () =>
     @raf = requestAnimationFrame @animate
     @tick()
@@ -67,13 +82,11 @@ class Poster
       # console.timeEnd("draw")
 
   init_text: () ->
-    h = @h
-    delay_for = 4000
     @heading = ($ "h1")
-        .css("top", () -> "#{(h - @clientHeight) / 2}px" )
-        .css("visibility", "visible")
+    @position_heading()
+      .css("visibility", "visible")
 
-    @heading.find("span")
+    spans = @heading.find("span")
       .css("opacity", 0)
       .each (i, el) ->
         el = $(el)
@@ -85,6 +98,11 @@ class Poster
       .animate({
         opacity: 1
       }, 2000)
+
+  position_heading: () =>
+    h = @h
+    @heading
+      .css("top", () -> "#{(h - @clientHeight) / 2}px" )
 
   glimmer: () =>
     if @glimmer_distance > @glimmer_target
