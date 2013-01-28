@@ -29,11 +29,12 @@ class Poster
       counter = 0
       for c in @circles
         do (c) ->
-          duration = Math.min((20 / c.r) * 8000, 10000)
+          delay = Math.max((20 / c.r) * 1000 - 1000, 0)
           c.opacity = 0
           c.tween = new TWEEN.Tween(o: 0)
-            .to({ o: 0.4 }, duration)
-            .easing(TWEEN.Easing.Quadratic.In)
+            .to({ o: 0.3 }, 1500)
+            .delay(delay)
+            .easing(TWEEN.Easing.Quadratic.InOut)
             .onUpdate(() ->
               c.opacity = @o)
             .start()
@@ -41,11 +42,11 @@ class Poster
 
       _.delay((() =>
         @init_text()
-      ), 5000)
+      ), 2000)
 
       _.delay((() => 
         @update_glimmer = @glimmer
-      ), 10000)
+      ), 3000)
 
   animate: () =>
     @raf = requestAnimationFrame @animate
@@ -108,11 +109,11 @@ class Poster
       cd = @dist(c.cx, c.cy, @glimmer_cx, @glimmer_cy)
       delta = cd - @glimmer_distance
       if (0 < delta < s1)
-        c.opacity = @tween_glimmer(s1-delta, 0.4, c.max_opacity, s1)
+        c.opacity = @tween_glimmer(s1-delta, 0.3, c.max_opacity, s1)
       else if (-s2 < delta < 0)
         c.opacity = @tween_glimmer(s2+delta, 0.1, c.max_opacity, s2)
       else if (-(s2+s3) < delta < -s2)
-        c.opacity = @tween_glimmer(-delta-s2, 0.1, 0.4, s3)
+        c.opacity = @tween_glimmer(-delta-s2, 0.1, 0.3, s3)
       else
         c.opacity = c.base_opacity
     return undefined

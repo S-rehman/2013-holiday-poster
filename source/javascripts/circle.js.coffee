@@ -1,9 +1,9 @@
 class Circle
   constructor: ({@r, @cx, @cy}) ->
     @[p] = (Math.round v) for own p, v of @
-    @opacity = 0.4
-    @base_opacity = 0.4
-    @max_opacity = Math.min(0.4 + (@r-5/25) * 0.6, 1)
+    @opacity = 0.3
+    @base_opacity = 0.3
+    @max_opacity = Math.min(0.3 + (@r-5/25) * 0.7, 1)
 
   draw: (ctx) ->
     ctx.beginPath()
