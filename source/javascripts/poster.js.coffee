@@ -38,7 +38,7 @@ class Poster
       counter = 0
       for c in @circles
         do (c) ->
-          delay = Math.max((20 / c.r) * 1000 - 1000, 0)
+          delay = Math.max((20 / c.r) * 800 - 800, 0)
           c.opacity = 0
           c.tween = new TWEEN.Tween(o: 0)
             .to({ o: 0.3 }, 1500)
@@ -51,11 +51,11 @@ class Poster
 
       _.delay((() =>
         @init_text()
-      ), 2000)
+      ), 600)
 
       _.delay((() => 
         @update_glimmer = @glimmer
-      ), 3000)
+      ), 2400)
 
   build_circles: () ->
     Circle.setup_context(@ctx)
