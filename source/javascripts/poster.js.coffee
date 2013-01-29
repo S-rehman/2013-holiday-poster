@@ -139,7 +139,7 @@ class Poster
     @canvas.trigger "glimmer", @glimmer_distance
     
     if @glimmer_count > 1
-      Circle.randomize_tint()
+      Circle.drift_tint()
 
     Circle.highlight_colors[1] = @tween_glimmer @glimmer_distance,
                                                 12,
@@ -184,6 +184,9 @@ class Poster
   init_glimmer: () ->
     @glimmer_count ?= -1
     ++@glimmer_count
+
+    if @glimmer_count > 1
+      Circle.randomize_tint()
 
     cx = parseInt Math.random() * @w
     cy = parseInt Math.random() * @h

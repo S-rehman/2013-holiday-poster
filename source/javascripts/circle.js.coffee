@@ -52,11 +52,25 @@ class Circle
     l = Math.round(a[2]*10) / 10
     "hsl(#{h}, #{s}%, #{l}%)"
 
+  # c.f. https://github.com/mbostock/d3/blob/master/src/core/interpolate.js
   @interp: (a1, a2, k) ->
+    h0 = a1[0]
+    s0 = a1[1]
+    l0 = a1[2]
+    h1 = a2[0] - h0
+    s1 = a2[1] - s0
+    l1 = a2[2] - l0
+
+    # ensure shortest path
+    if (h1 > 180)
+      h1 -= 360
+    else if (h1 < -180)
+      h1 += 360
+
     [
-      a1[0] + k * (a2[0] - a1[0])
-      a1[1] + k * (a2[1] - a1[1])
-      a1[2] + k * (a2[2] - a1[2])
+      h0 + k * h1
+      s0 + k * s1
+      l0 + k * l1
     ]
 
   @setup_context: (ctx) ->
@@ -65,10 +79,30 @@ class Circle
     ctx.lineWidth   = @line_width
 
   @randomize_tint: () ->
+    hue = Math.round(Math.random() * 360)
+    @highlight_colors[0] = hue
+    if Math.random() > 0.5
+      @tint_direction = 1
+    else
+      @tint_direction = -1
+    console.log("Starting hue: #{hue}, direction: #{@tint_direction}")
+
+  @drift_tint: () ->
+    @tint_direction ?= 1
     skew = (Math.random() - 0.5) * 10
     hue = @highlight_colors[0]
-    @highlight_colors[0] = Math.abs(hue + skew) % 360
+    adjusted_hue = hue + skew
+    # adjusted_hue = hue + @tint_direction * skew
+    # if adjusted_hue > 360 or adjusted_hue < 0
+      # @tint_direction *= -1
+      # adjusted_hue = hue + @tint_direction * skew
+    @highlight_colors[0] = if adjusted_hue > 0
+        adjusted_hue % 360
+      else
+        adjusted_hue + 360
 
+    # @highlight_colors[0] = adjusted_hue
+    console.log(@highlight_colors[0])
 
 # exports
 window.Circle = Circle
