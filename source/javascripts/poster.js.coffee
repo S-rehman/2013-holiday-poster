@@ -29,6 +29,15 @@ class Poster
       @build_circles() if @data?
     )
 
+    ($ document).on "keypress", (e) =>
+      return unless e.which is 32 # space bar
+      if @raf?
+        @stop()
+        (console.log "pause")
+      else
+        @animate()
+        (console.log "unpause")
+
     $.getJSON @json_url, (data) =>
       that = @
       @data = data
@@ -69,6 +78,7 @@ class Poster
 
   stop: () ->
     cancelAnimationFrame @raf
+    @raf = null
 
   tick: () ->
     if @freeze_circles
