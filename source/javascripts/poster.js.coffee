@@ -83,18 +83,39 @@ class Poster
 
   init_text: () ->
     @heading = ($ "h1")
+    @chars = @heading
+        .lettering("lines")
+      .children()
+        .addClass("line")
+        .lettering("words")
+      .children()
+        .addClass("word")
+        .lettering()
+      .children()
+        .addClass("char")
+        
     @position_heading()
       .css("visibility", "visible")
 
-    spans = @heading.find("span")
+    interval = 800
+    delay = -interval
+
+    spans = @heading.find(".word")
       .css("opacity", 0)
       .each (i, el) ->
         el = $(el)
-          .delay(i*2000)
+        text = el.text()
+
+        if (text.toLowerCase() in ["fun", "to", "impossible."])
+          delay += interval * 2
+        else
+          delay += interval
+
+        el.delay(delay)
           .animate({ opacity: 1 }, 2000)
 
     ($ "footer")
-      .delay(8000)
+      .delay(9000)
       .animate({
         opacity: 1
       }, 2000)
@@ -115,6 +136,8 @@ class Poster
     s2 = @glimmer_step2
     s3 = @glimmer_step3
 
+    @canvas.trigger "glimmer", @glimmer_distance
+    
     if @glimmer_count > 1
       Circle.randomize_tint()
 
@@ -134,6 +157,22 @@ class Poster
         c.opacity = @tween_glimmer(-delta-s2, 0.1, 0.3, s3)
       else
         c.opacity = c.base_opacity
+
+    for char, i in @chars
+      char = @chars.eq(i)
+      offset = char.offset()
+      cd = @dist(offset.left, offset.top, @glimmer_cx, @glimmer_cy)
+      delta = cd - @glimmer_distance
+      if (0 < delta < s1)
+        text_shadow = @tween_glimmer(s1-delta, 0, 20, s1)
+      else if (-s2 < delta < 0)
+        text_shadow = @tween_glimmer(s2+delta, 0, 20, s2)
+      else if (-(s2+s3) < delta < -s2)
+        text_shadow = 0
+      else
+        text_shadow = 0
+      char.css("text-shadow", "0 0 #{text_shadow}px hsl(#{Circle.highlight_colors[0]}, 100%, 90%)")
+
     return undefined
 
   tween_glimmer: (t, b, e, d) ->

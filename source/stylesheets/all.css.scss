@@ -23,13 +23,15 @@ circle {
 }
 
 h1 {
-  color: rgba(#fff, 0.75);
+  /* color: rgba(#fff, 0.75); */
+  color: #fff;
   font-family: franchise;
   font-size: 128px;
   font-size: 16vmin;
   font-weight: normal;
   line-height: 0.85;
   margin: 0;
+  opacity: 0.75;
   position: relative;
   text-align: center;
   text-transform: uppercase;
@@ -37,11 +39,15 @@ h1 {
   z-index: 20;
 
   span {
-    opacity: 0;
+    /* opacity: 0; */
     @include translateZ(0);
   }
 
-  i {
+  .line {
+    display: block;
+  }
+
+  .line1 .word1 .char3 {
     font-style: normal;
     padding: 0 0.03em;
   }
