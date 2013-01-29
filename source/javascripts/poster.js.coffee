@@ -164,14 +164,14 @@ class Poster
       cd = @dist(offset.left, offset.top, @glimmer_cx, @glimmer_cy)
       delta = cd - @glimmer_distance
       if (0 < delta < s1)
-        text_shadow = @tween_glimmer(s1-delta, 0, 20, s1)
+        text_shadow = @tween_glimmer(s1-delta, 0, 30, s1)
       else if (-s2 < delta < 0)
-        text_shadow = @tween_glimmer(s2+delta, 0, 20, s2)
+        text_shadow = @tween_glimmer(s2+delta, 0, 30, s2)
       else if (-(s2+s3) < delta < -s2)
         text_shadow = 0
       else
         text_shadow = 0
-      char.css("text-shadow", "0 0 #{text_shadow}px hsl(#{Circle.highlight_colors[0]}, 100%, 90%)")
+      char.css("text-shadow", "0 0 #{text_shadow}px hsl(#{Circle.highlight_colors[0]}, 100%, 94%)")
 
     return undefined
 
