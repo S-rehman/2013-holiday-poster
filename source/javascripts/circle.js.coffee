@@ -81,28 +81,23 @@ class Circle
   @randomize_tint: () ->
     hue = Math.round(Math.random() * 360)
     @highlight_colors[0] = hue
-    if Math.random() > 0.5
-      @tint_direction = 1
-    else
-      @tint_direction = -1
-    console.log("Starting hue: #{hue}, direction: #{@tint_direction}")
+    console.log("Starting hue: #{hue}")
 
   @drift_tint: () ->
-    @tint_direction ?= 1
     skew = (Math.random() - 0.5) * 10
     hue = @highlight_colors[0]
     adjusted_hue = hue + skew
-    # adjusted_hue = hue + @tint_direction * skew
-    # if adjusted_hue > 360 or adjusted_hue < 0
-      # @tint_direction *= -1
-      # adjusted_hue = hue + @tint_direction * skew
+
+    # Stay away from the 180º boundary to avoid drastic hue shifts.
+    # I thought the d3 interpolation function would keep this from happening, 
+    # but I was wrong. I don't understand color spaces very well!
+    if 208 < adjusted_hue < 211
+      adjusted_hue = hue - skew
+
     @highlight_colors[0] = if adjusted_hue > 0
         adjusted_hue % 360
       else
         adjusted_hue + 360
-
-    # @highlight_colors[0] = adjusted_hue
-    console.log(@highlight_colors[0])
 
 # exports
 window.Circle = Circle
