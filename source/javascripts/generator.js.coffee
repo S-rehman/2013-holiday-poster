@@ -10,6 +10,9 @@ class Poster
       .attr("width", @w())
       .attr("height", @h())
 
+    @ui_container = d3.select("#ui")
+    @ui_container.select("#download").style("display", "none")
+
     @nodes = []
 
     @queue = []
@@ -17,7 +20,7 @@ class Poster
     # start with a random point
     x = Math.random() * @w()
     y = Math.random() * @h()
-    n0 = { x: x, y: y, r: @r_for_point(x, y), i: 0 } 
+    n0 = { x: x, y: y, r: @r_for_point(x, y), i: 0 }
     @nodes.push n0
     @queue.push n0
 
@@ -30,7 +33,7 @@ class Poster
       y: y + r * Math.sin(45)
       i: 1
     }
-    @nodes.push n1 
+    @nodes.push n1
     @queue.push n1
 
     @node_id = 2
@@ -60,7 +63,27 @@ class Poster
       @svg.selectAll("circle")
           .attr("cx", (d) -> d.x)
           .attr("cy", (d) -> d.y)
+
+    @force.on "end", (e) =>
+      @allow_download()
+
     @draw()
+
+  allow_download: () =>
+    @ui_container.select(".message-box").style("display", "none")
+    @ui_container.select("#download").style("display", "block")
+    @ui_container.select("#download-json").on "click", () =>
+      d3.event.preventDefault()
+      @download_json()
+
+  download_json: () ->
+    filename = d3.select("#filename").property("value") || "bubbles"
+    filename += ".json"
+    data = (cx: d.x, cy: d.y, r: d.r for d in @nodes)
+    bb = new BlobBuilder()
+    bb.append JSON.stringify(data)
+    blob = bb.getBlob "application/json;charset=#{document.characterSet}"
+    saveAs blob, filename
 
   place_next_nodes: () =>
     if (node = @queue.shift())
@@ -132,7 +155,7 @@ class Poster
         r = node.r + quad.point.r
         if (r - l) > 0.001
           collides = true
-        
+
       (x1 > nx2) || (x2 < nx1) || (y1 > ny2) || (y2 < ny1)
     collides
 
@@ -174,6 +197,7 @@ class Poster
     Math.sqrt(dx*dx + dy*dy)
 
   draw: () ->
+    @ui_container.select(".message").text("Compacting")
     @force.start()
 
   collide: (node) ->
@@ -184,18 +208,18 @@ class Poster
       ny2 = node.y + r
 
       return (quad, x1, y1, x2, y2) ->
-        if (quad.point && (quad.point != node)) 
+        if (quad.point && (quad.point != node))
           x = node.x - quad.point.x
           y = node.y - quad.point.y
           l = Math.sqrt(x * x + y * y)
           r = node.r + quad.point.r
-          if (l < r) 
+          if (l < r)
             l = (l - r) / l * .75
             node.x -= x *= l
             node.y -= y *= l
             quad.point.x += x
             quad.point.y += y
-        
+
         (x1 > nx2) || (x2 < nx1) || (y1 > ny2) || (y2 < ny1)
 
 class Poster.Noise

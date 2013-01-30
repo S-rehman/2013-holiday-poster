@@ -84,3 +84,79 @@ footer {
     width: 40px;
   }
 }
+
+#ui {
+  background: #a09487;
+  bottom: 40px;
+  left: 40px;
+  padding: 10px;
+  position: absolute;
+  z-index: 100;
+
+  input[type=text] {
+    background: rgba(#fff, 0.75);
+    border: none;
+    color: #333;
+    font-size: 12px;
+    padding: 0.5em;
+  }
+
+  p {
+    color: rgba(#fff, 0.75);
+    margin: 0;
+    font-family: $caecilia;
+    font-size: 12px;
+
+    b {
+      font-weight: normal;
+      opacity: 0;
+    }
+  }
+
+  .dot1 {
+    -webkit-animation-name: dot1;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-duration: 1s;
+  }
+
+  .dot2 {
+    -webkit-animation-name: dot2;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-duration: 1s;
+  }
+
+  .dot3 {
+    -webkit-animation-name: dot3;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-duration: 1s;
+  }
+
+  a {
+    color: rgba(#fff, 0.75);
+    font-family: $caecilia;
+    font-size: 12px;
+    padding: 0.25em;
+    text-decoration: none;
+  }
+}
+
+@-webkit-keyframes dot1 {
+  0%   { opacity: 0; }
+  19%  { opacity: 0; }
+  20%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@-webkit-keyframes dot2 {
+  0%   { opacity: 0; }
+  39%  { opacity: 0; }
+  40%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@-webkit-keyframes dot3 {
+  0%   { opacity: 0; }
+  59%  { opacity: 0; }
+  60%  { opacity: 1; }
+  100% { opacity: 1; }
+}

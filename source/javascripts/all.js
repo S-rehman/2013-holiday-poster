@@ -1,4 +1,3 @@
-//= require_tree ./lib
-//= stub ./lib/d3
-//= stub ./lib/simplex-noise
+//= require ./lib/lodash
+//= require_tree ./lib/poster
 //= require poster

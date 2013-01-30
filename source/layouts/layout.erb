@@ -14,10 +14,20 @@
       Poster design by Shea Cadrin
       Web implementation by Adam Luikart
 
+    Want to generate your own bubble pattern?
+      http://2013.poster.thirteen23.com/generator
+
     Acknowledgements:
-      https://github.com/mbostock/d3
       https://github.com/bestiejs/lodash
+
+      Bubble generator:
+      https://github.com/mbostock/d3
       https://github.com/jwagner/simplex-noise.js
+      https://github.com/eligrey/Blob.js
+      https://github.com/eligrey/FileSaver.js
+
+      Poster animation:
+      https://github.com/davatron5000/Lettering.js
       https://gist.github.com/1579671 (requestAnimationFrame polyfill)
       https://github.com/sole/tween.js
 
@@ -30,8 +40,6 @@
   -->
   <body class="<%= page_classes %>">
     <%= yield %>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <%= javascript_include_tag  "all" %>
 
     <%= partial "analytics" %>
   </body>
