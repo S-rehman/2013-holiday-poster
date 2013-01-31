@@ -238,6 +238,6 @@ class Poster
     Math.sqrt(dx*dx + dy*dy)
 
 window.poster = new Poster {
-  json_url: "/javascripts/bubbles.json"
+  json_url: "/data/bubbles-#{Math.round(Math.random() * 10)}.json"
 }
 
