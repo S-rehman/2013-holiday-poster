@@ -140,6 +140,18 @@ footer {
   }
 }
 
+#download-json {
+  -webkit-animation-name: pulse;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 2s;
+}
+
+@-webkit-keyframes pulse {
+  0% { @include text-shadow(none); }
+  50% { @include text-shadow(0 0 10px rgba(255, 255, 255, 0.8)); }
+  100% { @include text-shadow(none); }
+}
+
 @-webkit-keyframes dot1 {
   0%   { opacity: 0; }
   19%  { opacity: 0; }

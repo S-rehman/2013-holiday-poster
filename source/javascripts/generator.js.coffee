@@ -77,13 +77,11 @@ class Poster
       @download_json()
 
   download_json: () ->
-    filename = d3.select("#filename").property("value") || "bubbles"
-    filename += ".json"
     data = (cx: d.x, cy: d.y, r: d.r for d in @nodes)
     bb = new BlobBuilder()
     bb.append JSON.stringify(data)
     blob = bb.getBlob "application/json;charset=#{document.characterSet}"
-    saveAs blob, filename
+    saveAs blob, "bubbles.json"
 
   place_next_nodes: () =>
     if (node = @queue.shift())
