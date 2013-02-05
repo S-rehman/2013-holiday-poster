@@ -237,8 +237,16 @@ class Poster.NoiseCanvas
     @opacity *= 255 # convert from 0-1 to 0-255
     @canvas = d3.select(document.body).append("canvas").node()
     @ctx = @canvas.getContext("2d")
+    @canvas.style.display = "none"
+    @visible = false
 
     window.addEventListener("resize", _.debounce(@draw, 0), false)
+    window.addEventListener("keydown", ((e) =>
+      return unless e.which is 78
+      if @visible then display = "none" else display = "block"
+      @canvas.style.display = display
+      @visible = !@visible
+    ), false)
     @draw()
 
   draw: =>
@@ -260,7 +268,7 @@ class Poster.NoiseCanvas
     @ctx.putImageData(image_data, 0, 0)
 
 window.n = new Poster.Noise 256
-# window.nc = new Poster.NoiseCanvas noise: window.n, opacity: 0.5
+window.nc = new Poster.NoiseCanvas noise: window.n, opacity: 0.5
 window.poster = new Poster {
   noise: window.n
   gravity: 0.01
