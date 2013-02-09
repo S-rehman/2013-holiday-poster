@@ -18,9 +18,28 @@ circle {
   /* fill: #a09487; */
   fill: none;
   stroke: #b9afa5;
-  stroke-opacity: 1;
+  stroke-opacity: 0.8;
   stroke-width: 2.5;
   @include translateZ(0);
+
+  &.queued {
+    stroke: #fdb913;
+  }
+
+  &.temp {
+    stroke: #40CE25;
+    stroke-opacity: 0.5;
+  }
+
+  &.reject {
+    stroke: red;
+    stroke-opacity: 0.5;
+  }
+
+  &.placement {
+    stroke: #a09487;
+    stroke-opacity: 1;
+  }
 }
 
 h1 {
@@ -171,4 +190,51 @@ footer {
   59%  { opacity: 0; }
   60%  { opacity: 1; }
   100% { opacity: 1; }
+}
+
+.algo-demo {
+  background: #fff;
+
+  #ui {
+    background: #b9afa5;
+    bottom: 20px;
+    left: 20px;
+
+    a {
+      color: #fff;
+    }
+  }
+}
+
+#legend {
+  font-family: $caecilia;
+  color: #333;
+  padding: 5px;
+  position: absolute;
+  background: #fff;
+  top: 20px;
+  right: 20px;
+  font-size: 12px;
+  z-index: 100;
+
+  ul {
+    @include reset-list-style;
+    @include reset-box-model;
+  }
+
+  .placed {
+    color: #b9afa5;
+  }
+
+  .queued {
+    color: #fdb913;
+  }
+
+  .candidate {
+    color: #40CE25;
+  }
+
+  .rejected {
+    color: red;
+  }
 }
