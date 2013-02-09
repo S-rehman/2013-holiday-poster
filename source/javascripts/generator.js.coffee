@@ -20,24 +20,29 @@ class Poster
     # start with a random point
     x = Math.random() * @w()
     y = Math.random() * @h()
+    angle = Math.PI / 4
     n0 = { x: x, y: y, r: @r_for_point(x, y), i: 0 }
     @nodes.push n0
     @queue.push n0
 
-    x = x + n0.r * Math.cos(45)
-    y = y + n0.r * Math.sin(45)
+    x = x + n0.r * Math.cos(angle)
+    y = y + n0.r * Math.sin(angle)
     r = @r_for_point(x + n0.r, y)
     n1 = {
       r: r
-      x: x + r * Math.cos(45)
-      y: y + r * Math.sin(45)
+      x: x + r * Math.cos(angle)
+      y: y + r * Math.sin(angle)
       i: 1
     }
     @nodes.push n1
     @queue.push n1
 
     @node_id = 2
-    @q = d3.geom.quadtree(@nodes, -@padding, -@padding, @w() + @padding, @h() + @padding)
+    @q = d3.geom.quadtree(@nodes,
+                          -@padding,
+                          -@padding,
+                          @w() + @padding,
+                          @h() + @padding)
     @place_next_nodes()
 
   init_graph: () =>
