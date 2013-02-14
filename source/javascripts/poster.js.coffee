@@ -136,12 +136,23 @@ class Poster
       .css("top", () -> "#{(h - @clientHeight) / 2}px" )
 
   glimmer: () =>
+    # The distance is where the current "crest" of the wave is.
+    #
+    # The target is the point on the other side of the screen we're
+    # driving towards.
     if @glimmer_distance > @glimmer_target
       @init_glimmer()
 
     @glimmer_v *= @glimmer_accel
     @glimmer_distance += @glimmer_v
 
+    # These steps represent how far from @glimmer_distance the bubbles
+    # should start to brighten, fade out to almost nothing, and then
+    # fade back to default brightness.
+    #
+    # In the declarative version, these were set as animation durations,
+    # not distances-from-the-crest. Here, they're precalcuated distances
+    # based on screen size.
     s1 = @glimmer_step1
     s2 = @glimmer_step2
     s3 = @glimmer_step3
@@ -157,12 +168,20 @@ class Poster
     for c in @circles
       cd = @dist(c.cx, c.cy, @glimmer_cx, @glimmer_cy)
       delta = cd - @glimmer_distance
+
+      # Determine which stage of the animation we're in and
+      # tween accordingly:
+
+      # Brighten to max
       if (0 < delta < s1)
         c.opacity = @tween_glimmer(s1-delta, 0.3, c.max_opacity, s1)
+      # Fade to min
       else if (-s2 < delta < 0)
         c.opacity = @tween_glimmer(s2+delta, 0.1, c.max_opacity, s2)
+      # Return to base opacity
       else if (-(s2+s3) < delta < -s2)
         c.opacity = @tween_glimmer(-delta-s2, 0.1, 0.3, s3)
+      # Nowhere near the crest of the wave
       else
         c.opacity = c.base_opacity
 
@@ -183,6 +202,7 @@ class Poster
 
     return undefined
 
+  # c.f. http://upshots.org/actionscript/jsas-understanding-easing
   tween_glimmer: (t, b, e, d) ->
     elapsed = t / d
     elapsed = 1 if elapsed > 1
