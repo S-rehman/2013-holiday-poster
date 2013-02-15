@@ -89,7 +89,7 @@ class Circle
     adjusted_hue = hue + skew
 
     # Stay away from the 180º boundary to avoid drastic hue shifts.
-    # I thought the d3 interpolation function would keep this from happening, 
+    # I thought the d3 interpolation function would keep this from happening,
     # but I was wrong. I don't understand color spaces very well!
     if 208 < adjusted_hue < 211
       adjusted_hue = hue - skew

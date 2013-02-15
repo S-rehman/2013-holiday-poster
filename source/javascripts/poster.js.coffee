@@ -62,7 +62,7 @@ class Poster
         @init_text()
       ), 600)
 
-      _.delay((() => 
+      _.delay((() =>
         @update_glimmer = @glimmer
       ), 2400)
 
@@ -103,7 +103,7 @@ class Poster
         .lettering()
       .children()
         .addClass("char")
-        
+
     @position_heading()
       .css("visibility", "visible")
 
@@ -158,7 +158,7 @@ class Poster
     s3 = @glimmer_step3
 
     @canvas.trigger "glimmer", @glimmer_distance
-    
+
     Circle.drift_tint()
     Circle.highlight_colors[1] = @tween_glimmer @glimmer_distance,
                                                 12,
